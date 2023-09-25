@@ -1,0 +1,13 @@
+.blog-item
+{
+    transition: all .5s linear;
+    cursor: pointer;
+ color: #0000005d
+
+   
+}
+
+.blog-item:hover
+{
+    transform: translateY(-15px);
+}
