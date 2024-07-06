@@ -23,6 +23,7 @@ import { useAuth } from "../../context/AuthContext";
 import { FaLock } from "react-icons/fa";
 import { validationSchema } from "./validationSchema";
 import { useFormik } from "formik";
+import { toast } from "react-toastify";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -47,13 +48,24 @@ const LoginForm = () => {
     roles: "", // Initialize this with the default selected value
   };
 
+
+
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      handleLogin({ password: values.password, email: values.email });
-      nevigate("/");
+     const res= await handleLogin({ password: values.password, email: values.email });
+     if(res===200){
+      toast.success(' You are logged in ', {
+        });
       resetForm();
+      nevigate("/");
+     }else{
+      toast.error(' Something went wronge', {
+      });
+     }
+    
+     
     },
   });
 

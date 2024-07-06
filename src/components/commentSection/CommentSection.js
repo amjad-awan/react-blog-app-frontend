@@ -11,7 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useBlogs } from "../../context/BlogContext";
 
 const CommentSection = ({ blogId }) => {
-  const { comment, setComment, handleAddComments } = useBlogs();
+  const { comment, setComment, handleAddComments, isCommenting } = useBlogs();
 
   return (
     <Box
@@ -40,9 +40,13 @@ const CommentSection = ({ blogId }) => {
         <Button
           type="submit"
           variant="contained"
+          disabled={isCommenting}
           sx={{ width: "100%", padding: "10px 0px", marginTop:"15px" }}
         >
-          Submit
+          {
+            isCommenting ?"Submitting...":"Submit"
+          }
+          
         </Button>
       </form>
     </Box>

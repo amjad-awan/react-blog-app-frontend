@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import UserLayOut from "../components/userLayOut/UserLayOut";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -21,106 +21,112 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const BlogDetails = () => {
   const { blogId } = useParams();
-  const { singleBlog, handleSingleBlog } = useBlogs();
+  const { singleBlog,isLoading, handleSingleBlog } = useBlogs();
 
-  React.useMemo(() => handleSingleBlog(blogId), [blogId]);
+  console.log("singleBlog",singleBlog)
 
+  useEffect(()=>{
+    handleSingleBlog(blogId)
+  },[blogId])
   return (
     <UserLayOut>
-      <Container sx={{ padding: "100px 0px" }}>
-        <Item>
-          <img
-            style={{ width: "100%", height: "400px", objectFit: "cover" }}
-            src={`${process.env.REACT_APP_BACKEND_URL}blog/get-photo/${singleBlog?._id}`}
-            alt="blog"
-          />
-          <>
-            <Box sx={{ padding: "30px 20px", textAlign: "left" }}>
-              <Typography
-                variant="h1"
-                sx={{
-                  padding: "0px 0px 10px 0px",
-                  fontSize: "30px",
-                  fontWeight: 700,
-                }}
-              >
-                {singleBlog.title}
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "0px 0px 30px 0px",
-                  gap: "15px",
-                  fontSize: "22px",
-                }}
-              >
+      {
+        isLoading ?<p>Loading ...</p>:<Container sx={{ padding: "100px 0px" }}>
+          <Item>
+            <img
+              style={{ width: "100%", height: "400px", objectFit: "cover" }}
+              src={`${process.env.REACT_APP_BACKEND_URL}blog/get-photo/${blogId}`}
+              alt="blog"
+            />
+            <>
+              <Box sx={{ padding: "30px 20px", textAlign: "left" }}>
+                <Typography
+                  variant="h1"
+                  sx={{
+                    padding: "0px 0px 10px 0px",
+                    fontSize: "30px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {singleBlog.title}
+                </Typography>
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    padding: "0px 0px 30px 0px",
                     gap: "15px",
+                    fontSize: "22px",
                   }}
                 >
-                  <FaRegClock />
-                  <Typography sx={{ fontSize: "22px", fontWeight: 500 }}>
-                    {moment(singleBlog.createdAt).format("LL")}
-                  </Typography>
-                </Box>
-                <Typography sx={{ fontSize: "22px", fontWeight: 500 }}>
-                  Written by : {singleBlog.blogername}
-                </Typography>
-              </Box>
-              <Typography
-                variant="p"
-                sx={{ fontSize: "20px", textAlign: "left" }}
-                dangerouslySetInnerHTML={{ __html: singleBlog.description }}
-              />
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              {singleBlog?.comment?.map((data) => {
-                return (
                   <Box
                     sx={{
-                      textAlign: "left",
-                      border: "1px solid #0000005d",
-                      padding: "20px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "15px",
                     }}
                   >
-                    <Box>
-                      {" "}
-                      <Typography
-                        variant="h4"
-                        sx={{ fontWeight: 700, fontSize: "22px" }}
-                      >
-                        {data.blogername}
-                      </Typography>
-                      <Typography
-                        variant="h4"
-                        sx={{ fontWeight: 600, fontSize: "20px" }}
-                      >
-                        {" "}
-                        {moment(data.timestamp).format("LL")}
-                      </Typography>
-                    </Box>
-
-                    <Typography
-                      varient="p"
-                      sx={{ fontSize: "22px", marginTop: "20px" }}
-                    >
-                      {data.text}
+                    <FaRegClock />
+                    <Typography sx={{ fontSize: "22px", fontWeight: 500 }}>
+                      {moment(singleBlog.createdAt).format("LL")}
                     </Typography>
                   </Box>
-                );
-              })}
-            </Box>
+                  <Typography sx={{ fontSize: "22px", fontWeight: 500 }}>
+                    Written by : {singleBlog.blogername}
+                  </Typography>
+                </Box>
+                <Typography
+                  variant="p"
+                  sx={{ fontSize: "20px", textAlign: "left" }}
+                  dangerouslySetInnerHTML={{ __html: singleBlog.description }}
+                />
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                {singleBlog?.comment?.map((data) => {
+                  return (
+                    <Box
+                      sx={{
+                        textAlign: "left",
+                        border: "1px solid #0000005d",
+                        padding: "20px",
+                      }}
+                    >
+                      <Box>
+                        {" "}
+                        <Typography
+                          variant="h4"
+                          sx={{ fontWeight: 700, fontSize: "22px" }}
+                        >
+                          {data.blogername}
+                        </Typography>
+                        <Typography
+                          variant="h4"
+                          sx={{ fontWeight: 600, fontSize: "20px" }}
+                        >
+                          {" "}
+                          {moment(data.timestamp).format("LL")}
+                        </Typography>
+                      </Box>
+  
+                      <Typography
+                        varient="p"
+                        sx={{ fontSize: "22px", marginTop: "20px" }}
+                      >
+                        {data.text}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
+  
+              <CommentSection blogId={blogId} />
+            </>
+          </Item>
+        </Container>
+      }
 
-            <CommentSection blogId={blogId} />
-          </>
-        </Item>
-      </Container>
     </UserLayOut>
   );
 };

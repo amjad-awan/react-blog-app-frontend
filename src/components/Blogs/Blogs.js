@@ -7,13 +7,15 @@ import Blog from "../Blog/Blog";
 import { useBlogs } from "../../context/BlogContext";
 
 const Blogs = () => {
-  const {allBlogs}=useBlogs()
+  const {allBlogs,isLoading}=useBlogs()
   return (
     <Box sx={{ width: "100%", marginTop: "7rem" }}>
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        {allBlogs?.map((blog, index) => {
-          return <Blog blog={blog} index={index} key={blog._id} />;
-        })}
+        {
+          isLoading? <p>loading</p>:allBlogs?.map((blog, index) => {
+            return <Blog blog={blog} index={index} key={blog._id} />
+          })
+        }
       </Grid>
     </Box>
   );

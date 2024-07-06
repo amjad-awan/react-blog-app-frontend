@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import Box from "@mui/material/Box";
+import GoogleButton from 'react-google-button'
 
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
@@ -22,6 +23,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { FaLock } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -30,6 +33,8 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 const RegisterForm = () => {
+  const { handleGoogleLogin } = useAuth();
+
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   // const [password, setPassword] = useState("");
@@ -56,22 +61,30 @@ const RegisterForm = () => {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}user/register-user`, {
+        const res= await axios.post(`${process.env.REACT_APP_BACKEND_URL}user/register-user`, {
           password: values.password,
           name: values.name,
           email: values.email,
           role: values.roles,
         });
+        console.log("res", res)
+        if(res&& res.status===200){
+          toast.success(' You are logged in ', {
+          });
+          resetForm();
+          navigate("/login");
+        }else{
+          toast.error(' Something went wronge', {
+          });
+         }
 
-        resetForm();
-        navigate("/login");
+       
       } catch (error) {
         console.log("error ", error);
       }
     },
   });
 
-  console.log("formik error ", formik.errors);
 
   return (
     <Item
@@ -184,6 +197,18 @@ const RegisterForm = () => {
       <Typography sx={{ marginTop: "30px", textAlign: "center" }}>
         <Link to="/login">have account already? then click here to login</Link>
       </Typography>
+      <Box sx={{display:"flex", marginTop:"40px", justifyContent:"center" }}>
+      <GoogleButton
+  type="dark"
+  onClick={async() => { const res= await handleGoogleLogin()
+    console.log("res206", res)
+    toast.success(' You are logged in ', {
+    });
+    navigate("/");
+
+  }}
+/>
+      </Box>
     </Item>
   );
 };

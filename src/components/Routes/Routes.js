@@ -14,6 +14,7 @@ const AppRoutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/user-dashboard" element={<UserDashboard />} />
       <Route path="/admin" element={<AdminRoute/>} >
+      <Route index element={<div>Page not found</div>} />
       <Route path="dashboard" element={<AdminDashboard />} />
       <Route path="create-post" element={<CreatePost />} />
       </Route>

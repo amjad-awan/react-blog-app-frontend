@@ -12,6 +12,8 @@ const BlogContext = createContext(null);
 export const BlogProvider = ({ children }) => {
   const [blogs, setBlogs] = useState([]);
   const [allBlogs, setAllBlogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCommenting, setIsCommenting]= useState(false)
   const [comment, setComment] = useState("");
   const [singleBlog, setSingleBlog] = useState({});
   const [blogsData, setBlogsData] = useState({
@@ -27,7 +29,7 @@ export const BlogProvider = ({ children }) => {
     }
     try {
       const { data } = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}blog/get-specific-user-blogs/${bloger.user._id}`
+        `${process.env.REACT_APP_BACKEND_URL}blog/get-specific-user-blogs/${bloger?.user?._id}`
       );
       console.log("data.blogs ==== 20", data?.blogs);
       setBlogs(data.blogs);
@@ -45,6 +47,8 @@ export const BlogProvider = ({ children }) => {
       setSingleBlog(data.blog);
     } catch (error) {
       console.log("error ===", error);
+    }finally{
+      setIsLoading(false)
     }
   }, []);
 
@@ -57,8 +61,8 @@ export const BlogProvider = ({ children }) => {
       formData.append("photo", data.photo);
       formData.append("title", data.title);
       formData.append("description", data.description);
-      formData.append("blogerid", bloger.user._id);
-      formData.append("blogername", bloger.user.name);
+      formData.append("blogerid", bloger?.user?._id);
+      formData.append("blogername", bloger?.user?.name);
 
       await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}blog/create-blog`,
@@ -81,7 +85,7 @@ export const BlogProvider = ({ children }) => {
     try {
       await axios.put(
         `${process.env.REACT_APP_BACKEND_URL}blog/like-dislike/${blogId}`,
-        { blogerid: bloger.user._id },
+        { blogerid: bloger?.user?._id },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -105,28 +109,38 @@ export const BlogProvider = ({ children }) => {
       setAllBlogs(data.blogs);
     } catch (error) {
       console.log("error ===", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleAddComments = useCallback(
     async (e) => {
       e.preventDefault();
+      setIsCommenting(true)
       try {
         const bloger = JSON.parse(localStorage.getItem("user"));
-        await axios.post(
+        const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}blog/comment/${singleBlog?._id}`,
           {
             comment,
-            blogername: bloger.user.name,
+            blogername: bloger?.user?.name,
           }
-        );
-
-        setComment("");
+        )
+        if(response){
+      
+          setSingleBlog({...singleBlog, comment:[...singleBlog.comment,response.data.comment]});
+          console.log(response);
+          setComment("");
+        }
+       
       } catch (error) {
         console.log("error ", error);
+      }finally{
+        setIsCommenting(false)
       }
     },
-    [comment, singleBlog._id]
+    [comment, singleBlog?._id]
   );
 
   useMemo(() => {
@@ -136,6 +150,7 @@ export const BlogProvider = ({ children }) => {
   useMemo(() => {
     handleBlogs();
   }, []);
+
   return (
     <BlogContext.Provider
       value={{
@@ -149,8 +164,10 @@ export const BlogProvider = ({ children }) => {
         blogsData,
         setBlogsData,
         setComment,
+        isCommenting,
         comment,
         singleBlog,
+        isLoading,
         handleAddComments,
         handleLikeDislikeBlog,
       }}

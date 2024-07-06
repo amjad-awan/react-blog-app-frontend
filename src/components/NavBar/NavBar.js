@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { BiUser } from "react-icons/bi";
 
 const pages = [
   { name: "home", link: "/" },
@@ -22,7 +23,7 @@ const pages = [
 const settings = ["Dashboard", "Logout"];
 
 const NavBar = () => {
-  const { user, setUser } = useAuth();
+  const { user,logout } = useAuth();
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -40,8 +41,7 @@ const NavBar = () => {
 
   const handleCloseUserMenu = (event) => {
     if (event === "Logout") {
-      localStorage.removeItem("user");
-      setUser(false);
+      logout()
       navigate("/");
     }
     if (event === "Dashboard") {
@@ -161,7 +161,8 @@ const NavBar = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton
+              
+                <IconButton
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -170,13 +171,17 @@ const NavBar = () => {
                   height: "50px",
                   borderRadius: "50%",
                   background: "#9b1c31",
+                  textTransform:"uppercase",
+                  fontSize:"18px",
                   color: "#fff",
                 }}
                 onClick={handleOpenUserMenu}
               >
                 {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
-                {user?.user?.name?.charAt(0)}
+                {!user?<BiUser/>:user?.user?.name?.charAt(0)}
               </IconButton>
+              
+              
             </Tooltip>
             {user?.user && (
               <Menu

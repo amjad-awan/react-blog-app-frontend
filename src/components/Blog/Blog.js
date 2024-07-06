@@ -38,6 +38,8 @@ const Blog = ({ blog, index }) => {
 
   const { handleLikeDislikeBlog } = useBlogs();
   const { user } = useAuth();
+  console.log("user",user)
+
   const [expandedIndex, setExpandedIndex] = useState(-1);
 
   const handleReadMore = (index) => {
@@ -91,7 +93,7 @@ const Blog = ({ blog, index }) => {
         <CardMedia
           component="img"
           height="194"
-          image={`${process.env.REACT_APP_BACKEND_URL}blog/get-photo/${blog._id}`}
+          image={`${process.env.REACT_APP_BACKEND_URL}blog/get-photo/${blog?._id}`}
           alt="Paella dish"
         />
         {/* <img
@@ -120,7 +122,7 @@ const Blog = ({ blog, index }) => {
             }}
           />
           <Link
-            to={`blogs/${blog._id}`}
+            to={`blogs/${blog?._id}`}
             style={{
               textDecoration: "none",
               cursor: "pointer",
@@ -182,16 +184,22 @@ const Blog = ({ blog, index }) => {
                 borderRadius: "50%",
               }}
               onClick={() => {
-                handleLikeDislikeBlog(blog._id);
+                if (blog?._id) {
+                  handleLikeDislikeBlog(blog._id);
+                } else {
+                  console.error('Blog ID is undefined');
+                }
               }}
+
+              
             >
-              {user && likes?.includes(user.user._id) ? (
+              {user && likes?.includes(user?.user?._id) ? (
                 <BsFillSuitHeartFill />
               ) : (
                 <FiHeart />
               )}
-            </Button>{" "}
-            <Typography> {likes.length} likes </Typography>
+            </Button>
+            <Typography>{likes?.length} likes </Typography>
           </Box>
           <Box
             sx={{
