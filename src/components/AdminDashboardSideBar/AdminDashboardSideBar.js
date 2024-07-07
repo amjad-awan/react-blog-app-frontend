@@ -25,8 +25,7 @@ const AdminDashboardSideBar = ({ showSideBar, data }) => {
   return (
     <Box
       sx={{
-        height: "100vh",
-        position: "fixed",
+        position: "sticky",
         background: "#fff",
         display: "flex",
         flexDirection: "column",

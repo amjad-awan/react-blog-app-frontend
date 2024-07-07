@@ -19,15 +19,23 @@ const AdminDashboard = () => {
       }}
     >
       <AdminDashboardSideBar showSideBar={showSideBar} />
-      <Box container flex={1} sx={{ padding: "20px 20px",minHeight: "100vh" }}>
-      <Button
+      <Box
+        container
+        sx={{
+          width: "calc(100%-300px)",
+          padding: "20px 20px",
+          minHeight: "100vh",
+          flexGrow:1
+        }}
+      >
+        <Button
           sx={{
             display: "block",
             height: "50px",
             transition: "all .3s linear",
-position:"absolute",
-top:"20px",
-left:showSideBar?"110px":"350px",
+            position: "absolute",
+            top: "20px",
+            left: showSideBar ? "110px" : "350px",
             background: "#99baee",
             marginBottom: "20px",
           }}
@@ -37,11 +45,8 @@ left:showSideBar?"110px":"350px",
             style={{ color: "#7DA9CE", fontSize: "40px", fontWeight: 700 }}
           />
         </Button>
-      <AdminDashboardRightSide
-       
-      />
+        <AdminDashboardRightSide />
       </Box>
-    
     </Box>
   );
 };

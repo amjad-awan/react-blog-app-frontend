@@ -48,7 +48,7 @@ const PostsTable = () => {
       renderCell: (params) => {
         return (
           <img
-            src={`blog/get-photo/${params.id}`}
+            src={`${process.env.REACT_APP_BACKEND_URL}blog/get-photo/${params.id}`}
             alt={params.photo}
             loading="lazy"
             width="100px"
@@ -108,9 +108,10 @@ const PostsTable = () => {
       editable: true,
       headerAlign: "center",
       renderCell: (params) => {
+        console.log("params.createdAt",params)
         return (
           <Typography style={{ textAlign: "center", width: "100%" }}>
-            {moment(params.createdAt).format("LL")}
+            {moment(params.value).format("LL")}
           </Typography>
         );
       },
@@ -130,7 +131,7 @@ const PostsTable = () => {
     },
   ];
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ maxWidth: "100%" }}>
       {blogs.length > 0 && (
         <DataGrid
           rows={blogs}
