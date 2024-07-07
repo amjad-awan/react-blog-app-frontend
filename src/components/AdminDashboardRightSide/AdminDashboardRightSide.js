@@ -13,7 +13,7 @@ const AdminDashboardRightSide = ({}) => {
           </Typography>
         </Box>
 
-        <Box sx={{ width: "100%" ,overflow: "auto" }}>
+        <Box sx={{ maxWidth: "100%" ,overFlow: "auto" }}>
           
             <PostsTable />
         </Box>
