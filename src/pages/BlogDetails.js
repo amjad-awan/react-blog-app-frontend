@@ -10,6 +10,7 @@ import moment from "moment";
 import { FaRegClock } from "react-icons/fa";
 import CommentSection from "../components/commentSection/CommentSection";
 import { useBlogs } from "../context/BlogContext";
+import Loader from "../components/Loader/Loader";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -21,17 +22,23 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const BlogDetails = () => {
   const { blogId } = useParams();
-  const { singleBlog,isLoading, handleSingleBlog } = useBlogs();
+  const { singleBlog, isLoading, handleSingleBlog } = useBlogs();
 
-  console.log("singleBlog",singleBlog)
+  console.log("singleBlog", singleBlog);
 
-  useEffect(()=>{
-    handleSingleBlog(blogId)
-  },[blogId])
+  useEffect(() => {
+    handleSingleBlog(blogId);
+  }, [blogId]);
   return (
     <UserLayOut>
-      {
-        isLoading ?<p>Loading ...</p>:<Container sx={{ padding: "100px 0px" }}>
+      <Container sx={{ padding: "100px 0px" }}>
+        {isLoading ? (
+          <Box
+            sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+          >
+            <Loader />
+          </Box>
+        ) : (
           <Item>
             <img
               style={{ width: "100%", height: "400px", objectFit: "cover" }}
@@ -83,7 +90,9 @@ const BlogDetails = () => {
                   dangerouslySetInnerHTML={{ __html: singleBlog.description }}
                 />
               </Box>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              <Box
+                sx={{ display: "flex", flexDirection: "column", gap: "20px" }}
+              >
                 {singleBlog?.comment?.map((data) => {
                   return (
                     <Box
@@ -109,7 +118,7 @@ const BlogDetails = () => {
                           {moment(data.timestamp).format("LL")}
                         </Typography>
                       </Box>
-  
+
                       <Typography
                         varient="p"
                         sx={{ fontSize: "22px", marginTop: "20px" }}
@@ -120,13 +129,12 @@ const BlogDetails = () => {
                   );
                 })}
               </Box>
-  
+
               <CommentSection blogId={blogId} />
             </>
           </Item>
-        </Container>
-      }
-
+        )}
+      </Container>
     </UserLayOut>
   );
 };
