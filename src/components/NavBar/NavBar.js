@@ -21,7 +21,6 @@ const pages = [
   { name: "register", link: "/register" },
 ];
 const settings = ["Dashboard", "Logout"];
-
 const NavBar = () => {
   const { user,logout } = useAuth();
   const navigate = useNavigate();
